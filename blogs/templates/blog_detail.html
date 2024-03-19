@@ -1,0 +1,157 @@
+{% extends "blog_base.html" %}
+{% block start %}
+{% load extras %}
+{% load static %}
+<div class="container">
+    <div class="row">
+        <div class="col-9 mx-auto mt-4">
+            <h1>{{blog.title}}</h1>
+        </div>
+        <div class="col-9 mx-auto mt-4">
+            <div class="container">
+                <p>{{blog.content|safe}}</p>
+            </div>
+            <hr>
+            <!-- Rating section -->
+            <h5>Leave a rating - </h5>
+            <form action="/blogs/rating/{{blog.id}}/" method="POST">
+                {% csrf_token %}
+                <div class="rate">
+                    <input type="radio" name="rating" id="rating10" value="5" required {% if curr_user_rate.rating == 5 %}checked{% endif %} >
+                    <label for="rating10" title="5"></label>
+                    <input type="radio" name="rating" id="rating9" value="4.5" required {% if curr_user_rate.rating == 4.5 %}checked{% endif %}>
+                    <label for="rating9" title="4.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating8" value="4" required {% if curr_user_rate.rating == 4 %}checked{% endif %}>
+                    <label for="rating8" title="4"></label>
+                    <input type="radio" name="rating" id="rating7" value="3.5" required {% if curr_user_rate.rating == 3.5 %}checked{% endif %} >
+                    <label for="rating7" title="3.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating6" value="3" required {% if curr_user_rate.rating == 3 %}checked{% endif %} >
+                    <label for="rating6" title="3"></label>
+                    <input type="radio" name="rating" id="rating5" value="2.5" reqiured {% if curr_user_rate.rating == 2.5 %}checked{% endif %}>
+                    <label for="rating5" title="2.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating4" value="2" required {% if curr_user_rate.rating == 2 %} checked{% endif %} >
+                    <label for="rating4" title="2"></label>
+                    <input type="radio" name="rating" id="rating3" value="1.5" required {% if curr_user_rate.rating == 1.5 %} checked{% endif %} >
+                    <label for="rating3" title="1.5" class="half"></label>
+                    <input type="radio" name="rating" id="rating2" value="1" required {% if curr_user_rate.rating == 1 %} checked{% endif %} >
+                    <label for="rating2" title="1"></label>
+                    <input type="radio" name="rating" id="rating1" value="0.5" required {% if curr_user_rate.rating == 0.5 %} checked{% endif %} >
+                    <label for="rating1" title="0.5" class="half"></label>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        Sumbit
+                    </button>
+                    {% for message in messages %}
+                        {%if "rating_posted" in message.tags %}
+                        <script>
+                            Swal.fire({
+                            title: "Success",
+                            text: "{{message}}",
+                            icon: "success"
+                            });
+                        </script>
+                        {% endif %}
+                    {% endfor %}
+                </div>    
+            </form>          
+            <hr>
+            <h4>Comments ({{comments.count}})</h4>
+            <div class="row my-3">
+                {% for comment in comments%}
+                
+                    <div class="col-1 ">
+                        <img class="rounded mx-auto d-block w-100 border border-dark p-2" src="{% static 'blogs/img/dummy_user.png' %}" alt="user">
+                    </div>
+                    <div class="col-11 ">
+                        {{comment.user.username}}
+                        <br>
+                        {{comment.comment_text}}
+                        <div class="reply mx-0">
+                            <a class="btn btn-sm btn-primary" data-bs-toggle="collapse"
+                                href="#replyBox{{comment.id}}">Reply
+                            </a>
+                            {% if blog.user == request.user %}
+                            <a class="btn btn-sm btn-danger" href="#" onclick="sweetAlertCommentDelete({{comment.id}})">Delete</a>
+                            {% endif %}
+                            <div class="collapse mt-1" id="replyBox{{comment.id}}">
+                                <div class="card card-body my-2">
+                                    <form action="/blogs/comment/" method="post">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="comment mb-2">Post a reply </label>
+                                            <input type="text" class="form-control mb-2" name="comment"
+                                                placeholder="Enter comment here">
+                                            <input type="hidden" name="commentid" value="{{comment.id}}">
+                                        </div>
+                                        <input type="hidden" name="blogid" value="{{blog.id}}">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        {% for message in messages %}
+                                            {%if "reply_posted" in message.tags %}
+                                                <script>
+                                                    Swal.fire({
+                                                    title: "Success",
+                                                    text: "{{message}}",
+                                                    icon: "success"
+                                                     });
+                                                </script>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="replies my-2">
+                                {% for reply in reply_dict|get_val:comment.id %}
+                                    <div class="row my-2">
+                                        <div class="col-1 ">
+                                            <img class="rounded mx-auto d-block w-75 my-2 border border-dark p-2" src="{% static 'blogs/img/dummy_user.png' %}" alt="user">
+                                        </div>
+                                        <div class="col-11">
+                                            {{reply.user.username}}
+                                            <br>
+                                            {{reply.comment_text}}
+                                            <br>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+            <h4>Leave a comment</h4>
+            <br>
+            <form action="/blogs/comment/" method="post">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <label for="comment" class="col-2 col-form-label">Enter the comment</label>
+                    <div class="col-5">
+                        <textarea class="form-control" id="comment" name="comment" rows="4" required></textarea>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <input type="hidden" name="blogid" value="{{blog.id}}">
+                    <input type="hidden" name="commentid" value="{{comment.id}}">
+                    <div> 
+                        <button class="btn btn-success">Send</button>
+                        {% for message in messages %}
+                            {%if "comment_posted" in message.tags %}
+                            <script>
+                                Swal.fire({
+                                    title: "Success",
+                                    text: "{{message}}",
+                                    icon: "success"
+                                });
+                            </script>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="{% static 'blogs/js/sweetalert.js' %}"></script>
+
+{% endblock %}

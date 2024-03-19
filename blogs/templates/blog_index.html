@@ -1,0 +1,92 @@
+{% extends "blog_base.html" %}
+{% block start %}
+{% load extras %}
+    <div class="container">
+      <div class="row">
+        <div class="col-9 mx-auto mt-4 d-flex justify-content-between">
+          <h1>Blogs</h1>
+          <div class="d-flex align-items-center gap-1">
+            <a href="/blogs/bookmark_details/" class="btn btn-secondary">View Bookmarks</a>
+            <a href="/blogs/add_blog/" class="btn btn-success">Add Blog</a>
+          </div>
+        </div>
+        <div class="col-9 mx-auto mt-4">
+          {% if messages %}
+          <div class="alert alert-primary" role="alert">
+              {% for message in messages %}
+                  {{ message }}
+              {% endfor %}
+          </div>
+          {% endif %}
+          <div class="row">
+            {% for query in page_obj %}
+            <div class="col-4 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between">
+                    <h5 class="card-title">{{query.title|truncatechars:25}}</h5>
+                    <div>
+                      <form id="myForm{{query.id}}" action="/blogs/bookmark/{{query.id}}/" method="post">
+                        {%csrf_token%}
+                        <div class="bookmark">
+                            <input type="checkbox" name="is_bookmarked" value="True" id="bookmark{{query.id}}" {% if query.id in bookmark_blog_ids %} checked {% endif %} onclick="sumbitForm({{query.id}})">
+                            <label for="bookmark{{query.id}}" title="bookmark"></label>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <h6 class="card-subtitle mb-2 text-body-secondary">{{ query.content|striptags|safe|truncatechars:35}}</h6>
+                  <p class="card-text">Author: {{query.user.username}}</p>
+                  <p class="card-text">Rating: - 
+                    <span class="fa fa-star {% if avg_rate_dict|get_val:query.id > 0 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if avg_rate_dict|get_val:query.id > 1 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if avg_rate_dict|get_val:query.id > 2 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if avg_rate_dict|get_val:query.id > 3 %} checked {% endif %}" ></span>
+                    <span class="fa fa-star {% if avg_rate_dict|get_val:query.id > 4 %} checked {% endif %}"></span> ({{avg_rate_dict|get_val:query.id}})
+                  </p>
+                  <p class="card-text">Last Updated: {{query.updated_at|date:"D, j F"}}</p>
+                  <div class="d-flex justify-content-between">
+                    <a href="/blogs/blog_detail/{{query.id}}" class="btn btn-sm btn-secondary">Read More</a>
+                    {% if query.user == request.user %}
+                    <div class="d-flex align-items-center gap-1">
+                      <a class="btn btn-sm btn-primary" href="/blogs/update_blog/{{query.id}}" aria-label="Edit">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </a>
+                      <a class="btn btn-sm btn-danger" href="#" aria-label="Delete" onclick="sweetAlertBlogDelete({{query.id}})">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                      </a>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+              <li class="page-item">
+                {% if page_obj.has_previous %}
+                  <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo; Previous</span>
+                  </a>
+                {% endif %}
+              </li>
+              <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+              <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+              <li class="page-item">
+                {% if page_obj.has_next %}
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                  <span aria-hidden="true">Next &raquo;</span>
+                </a>
+                {% endif %}
+              </li>
+            </ul>
+          </nav>
+          <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+          </span>
+        </div>
+      </div>
+    </div>
+{% endblock %}

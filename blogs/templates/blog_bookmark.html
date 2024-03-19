@@ -1,0 +1,62 @@
+{% extends "blog_base.html" %}
+{% block start %}
+{% load extras %}
+<div class="container">
+    <div class="col-9 mx-auto mt-4">
+        <h1>Bookmarks</h1>
+        <hr>
+        {% if messages %}
+          <div class="alert alert-primary" role="alert">
+              {% for message in messages %}
+                  {{ message }}
+              {% endfor %}
+          </div>
+        {% endif %}
+        <div class="row">
+            {% for query in queryset %}
+            <div class="col-4 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between">
+                    <h5 class="card-title">{{query.blog.title|truncatechars:25}}</h5>
+                    <div>
+                      <form id="myForm{{query.blog.id}}" action="/blogs/bookmark/{{query.blog.id}}/" method="post">
+                        {%csrf_token%}
+                        <div class="bookmark">
+                            <input type="checkbox" name="is_bookmarked" value="True" id="bookmark{{query.blog.id}}" {% if query.blog.id in bookmark_blog_ids %} checked {% endif %} onclick="sumbitForm({{query.blog.id}})">
+                            <label for="bookmark{{query.blog.id}}" title="bookmark"></label>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <h6 class="card-subtitle mb-2 text-body-secondary">{{ query.blog.content|striptags|safe|truncatechars:35}}</h6>
+                  <p class="card-text">Author: {{query.blog.user.username}}</p>
+                  <p class="card-text">Rating: - 
+                    <span class="fa fa-star {% if avg_rate_dict|get_val:query.blog.id > 0 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if avg_rate_dict|get_val:query.blog.id > 1 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if avg_rate_dict|get_val:query.blog.id > 2 %} checked {% endif %}"></span>
+                    <span class="fa fa-star {% if avg_rate_dict|get_val:query.blog.id > 3 %} checked {% endif %}" ></span>
+                    <span class="fa fa-star {% if avg_rate_dict|get_val:query.blog.id > 4 %} checked {% endif %}"></span> ({{avg_rate_dict|get_val:query.blog.id}})
+                  </p>
+                  <p class="card-text">Last Updated: {{query.blog.updated_at|date:"D, j F"}}</p>
+                  <div class="d-flex justify-content-between">
+                    <a href="/blogs/blog_detail/{{query.blog.id}}" class="btn btn-sm btn-secondary">Read More</a>
+                    {% if query.blog.user == request.user %}
+                    <div class="d-flex align-items-center gap-1">
+                      <a class="btn btn-sm btn-primary" href="/blogs/update_blog/{{query.blog.id}}" aria-label="Edit">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </a>
+                      <a class="btn btn-sm btn-danger" href="#" aria-label="Delete" onclick="sweetAlertBlogDelete({{query.blog.id}})">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                      </a>
+                    </div>      
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>    
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block start %}
+    <nav class="navbar bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/"> Hello, {{request.user.first_name}} {{request.user.last_name}} </a>
+        <a href="/logout/" class="btn btn-danger">Logout</a>
+      </div>
+    </nav>
+    <div class="container mt-5">
+        <h3>
+            To-Do List
+        </h3>
+        <a href="/todo/add_task" class="btn btn-primary">Add task</a>
+        <table class="table table-bordered mt-3 ">
+            <thead>
+              <tr>
+                <th scope="col">S.No.</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Status</th>
+                <th scope="col">Created Date</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for todo in todos%}
+              <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{todo.title}}</td>
+                <td>{{todo.description}}</td>
+                <td>{% if todo.completed %}
+                    Completed
+                    {% else %}
+                    Pending
+                    {% endif %}
+                </td>
+                <td>{{todo.created_at|date:"D, j F"}}</td>
+                <td>
+                    <div class="d-flex justify-content-evenly">
+                    <a href="/todo/delete_task/{{todo.id}}" class="btn btn-danger">Delete</a>
+                    <a href="/todo/update_task/{{todo.id}}" class="btn btn-secondary">Update</a>
+                    <a href="/todo/completed/{{todo.id}}" class="btn btn-success">Mark as completed</a>
+                    </div>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+
+    </div>
+
+{% endblock %}

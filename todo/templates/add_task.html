@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block start %}
+<div class="container mt-5">
+    <form class="col-6 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Add a Task</h2>
+        <hr>
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" rows="2" name="description"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Add Task</button>
+      </form>
+</div>
+
+
+
+
+{% endblock %}

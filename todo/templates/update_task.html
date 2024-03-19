@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block start %}
+<div class="container mt-5">
+    <form class="col-6 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Update Task - {{task.id}}</h2>
+        <hr>
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="title" name="title" value="{{task.title}}" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" rows="2" name="description">{{task.description}}</textarea>
+        </div>
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="completed" name="completed"{% if task.completed %} checked {% endif %}>
+            <label class="form-check-label" for="completed">
+              Completed Status
+            </label>
+        </div>
+        <button type="submit" class="btn btn-success">Update Task</button>
+      </form>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "blog_base.html" %}
+{% block start %}
+<div class="container">
+  <div class="row">
+    <div class="col-9 mx-auto mt-4">
+      <h1>Add Blog</h1>
+      <hr>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="title" name="title"  value="{{blog.title}}" required>
+        </div>
+        <div class="mb-3">
+          <label for="content" class="form-label">Description</label>
+          <textarea class="form-control" id="content" rows="2" name="content">{{blog.content}}</textarea>
+          <script>
+            CKEDITOR.replace('content');
+          </script>
+        </div>
+        <button type="submit" class="btn btn-success">Add Blog</button>
+      </form>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

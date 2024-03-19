@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block start %}
+    <nav class="navbar bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/"> Hello, {{request.user.first_name}} {{request.user.last_name}} </a>
+        <a href="/logout/" class="btn btn-danger">Logout</a>
+      </div>
+    </nav>
+    <div class="container mt-5">
+        <a href="/todo/" class="btn btn-primary">To-do List</a>
+        <a href="/blogs/" class="btn btn-secondary">Blog Page</a>
+
+    </div>
+
+{% endblock %}
