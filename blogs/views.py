@@ -3,13 +3,14 @@ from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from blogs.models import Blog, Comment, Rating, Bookmark
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Avg
 from blogs.utils import send_email_to_owner
 
 
-class IndexView(View):
+class IndexView(LoginRequiredMixin, View):
     template_name = "blog_index.html"
 
     def get(self, request):
@@ -43,7 +44,7 @@ class IndexView(View):
         return render(request, self.template_name, context)
 
 
-class DeleteBlogView(View):
+class DeleteBlogView(LoginRequiredMixin, View):
 
     def get(self, request, blog_id):
         blog = get_object_or_404(Blog, pk=blog_id)
@@ -60,7 +61,7 @@ class DeleteBlogView(View):
             return redirect('/blogs/')
 
 
-class UpdateBlogView(View):
+class UpdateBlogView(LoginRequiredMixin, View):
     template_name = "blog_update.html"
 
     def get(self, request, *args, **kwargs):
@@ -89,7 +90,7 @@ class UpdateBlogView(View):
             return redirect('/blogs/')
 
 
-class AddBlogView(View):
+class AddBlogView(LoginRequiredMixin, View):
     template_name = "blog_add.html"
 
     def get(self, request):
@@ -109,7 +110,7 @@ class AddBlogView(View):
         return redirect('/blogs/')
 
 
-class BlogDetailView(View):
+class BlogDetailView(LoginRequiredMixin, View):
     template_name = 'blog_detail.html'
 
     def get(self, request, blog_id):
@@ -135,7 +136,7 @@ class BlogDetailView(View):
         return render(request, self.template_name, context)
 
 
-class CommentView(View):
+class CommentView(LoginRequiredMixin, View):
 
     def post(self, request):
         data = request.POST
@@ -164,7 +165,7 @@ class CommentView(View):
         return redirect('/blogs/blog_detail/'+blogid+'/')
 
 
-class CommentDeleteView(View):
+class CommentDeleteView(LoginRequiredMixin, View):
 
     def get(self, request, comment_id):
         comment = get_object_or_404(Comment, pk=comment_id)
@@ -173,7 +174,7 @@ class CommentDeleteView(View):
         return redirect('/blogs/blog_detail/'+str(blogid)+'/')
 
 
-class RatingView(View):
+class RatingView(LoginRequiredMixin, View):
 
     def post(self, request, blog_id):
         data = request.POST
@@ -190,7 +191,7 @@ class RatingView(View):
         return redirect('/blogs/blog_detail/'+blog_id+'/')
 
 
-class BookmarkView(View):
+class BookmarkView(LoginRequiredMixin, View):
     template_name = "blog_bookmark.html"
 
     def get(self, request):

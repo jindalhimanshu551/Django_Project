@@ -4,17 +4,16 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
 
 # Create your views here.
 
-@login_required(login_url='/login/')
+@login_required
 def index(request):
     username = request.user.username
-    queryset = todo.objects.filter(
+    queryset = Todo.objects.filter(
         user__username=username)
     
-    task_completed_query = todo.objects.filter(
+    task_completed_query = Todo.objects.filter(
         user__username=username,
         completed=True,
     )
@@ -28,7 +27,7 @@ def index(request):
     }
     return render(request,"index.html",context)
 
-@login_required(login_url='/login/')
+@login_required
 def add_task(request):
     if request.method == "POST":
         data = request.POST
@@ -38,7 +37,7 @@ def add_task(request):
         description = data.get('description')
         
 
-        todo.objects.create(
+        Todo.objects.create(
             user=user,
             title=title,
             description=description,
@@ -48,9 +47,9 @@ def add_task(request):
 
     return render(request,"add_task.html")
 
-@login_required(login_url='/login/')
+@login_required
 def update_task(request, task_id):
-    task = get_object_or_404(todo, pk=task_id)
+    task = get_object_or_404(Todo, pk=task_id)
     if request.method == "POST":
         data = request.POST
 
@@ -75,9 +74,9 @@ def update_task(request, task_id):
     }
     return render(request,"update_task.html",context)
 
-@login_required(login_url='/login/')
+@login_required
 def mark_as_completed(request, task_id):
-    task = get_object_or_404(todo, pk=task_id)
+    task = get_object_or_404(Todo, pk=task_id)
     task.completed = True
     task.save()
 
@@ -85,7 +84,7 @@ def mark_as_completed(request, task_id):
 
 @login_required(login_url='/login/')
 def delete_task(request, task_id):
-    task = get_object_or_404(todo, pk=task_id)
+    task = get_object_or_404(Todo, pk=task_id)
     task.delete()
 
     return redirect('/todo/')
@@ -150,7 +149,7 @@ def logout_page(request):
     logout(request)
     return redirect('/login/')
 
-@login_required(login_url='/login/')
+@login_required
 def landing_page(request):
     return render(request, "landing_page.html")
 
