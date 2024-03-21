@@ -29,7 +29,7 @@
                       <form id="myForm{{query.id}}" action="/blogs/bookmark/{{query.id}}/" method="post">
                         {%csrf_token%}
                         <div class="bookmark">
-                            <input type="checkbox" name="is_bookmarked" value="True" id="bookmark{{query.id}}" {% if query.id in bookmark_blog_ids %} checked {% endif %} onclick="sumbitForm({{query.id}})">
+                            <input type="checkbox" name="is_bookmarked" value="True" id="bookmark{{query.id}}" {% if query.id in bookmark_blog_ids %} checked {% endif %} onclick="submitForm({{query.id}})">
                             <label for="bookmark{{query.id}}" title="bookmark"></label>
                         </div>
                       </form>

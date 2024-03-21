@@ -1,8 +1,22 @@
 from django.contrib import admin
-from .models import *
+from django.contrib.auth.admin import UserAdmin
+from .models import User, Blog, Comment, Rating, Bookmark
 from django.db.models import Avg
 
 # Register your models here.
+
+admin.site.unregister(User)
+
+class BlogInline(admin.TabularInline):
+    model = Blog
+    extra = 0
+
+
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    inlines = [
+        BlogInline,
+    ]
 
 
 @admin.register(Blog)

@@ -228,10 +228,10 @@ class BookmarkView(LoginRequiredMixin, View):
         if is_bookmarked:
             bookmark_obj.is_bookmarked = True
             bookmark_obj.save()
-            messages.info(request, "Added to bookmark")
-            return redirect(request.META.get('HTTP_REFERER'))
+            message = "Added to Bookmark"
+            return HttpResponse(message)
         else:
             bookmark_obj.is_bookmarked = False
             bookmark_obj.save()
-            messages.info(request, "Remove from bookmark")
-            return redirect(request.META.get('HTTP_REFERER'))
+            message = "Remove from Bookmark"
+            return HttpResponse(message)

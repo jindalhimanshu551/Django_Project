@@ -23,7 +23,7 @@
                       <form id="myForm{{query.blog.id}}" action="/blogs/bookmark/{{query.blog.id}}/" method="post">
                         {%csrf_token%}
                         <div class="bookmark">
-                            <input type="checkbox" name="is_bookmarked" value="True" id="bookmark{{query.blog.id}}" {% if query.blog.id in bookmark_blog_ids %} checked {% endif %} onclick="sumbitForm({{query.blog.id}})">
+                            <input type="checkbox" name="is_bookmarked" value="True" id="bookmark{{query.blog.id}}" {% if query.blog.id in bookmark_blog_ids %} checked {% endif %} onclick="submitForm({{query.blog.id}})">
                             <label for="bookmark{{query.blog.id}}" title="bookmark"></label>
                         </div>
                       </form>

@@ -1,3 +1,12 @@
+// Force reloading page when using browser back button
+(function () {
+  window.onpageshow = function(event) {
+      if (event.persisted) {
+          window.location.reload();
+      }
+  };
+})();
+
 function sweetAlertBlogDelete(id){
     Swal.fire({
         title: "Are you sure?",
@@ -19,6 +28,7 @@ function sweetAlertBlogDelete(id){
         }
       });
 }
+
 function sweetAlertCommentDelete(id){
     Swal.fire({
         title: "Are you sure?",
@@ -40,6 +50,26 @@ function sweetAlertCommentDelete(id){
         }
       });
 }
-function sumbitForm(id){
-  document.getElementById("myForm"+id).submit();
+
+function submitForm(id){
+  var form = $("#myForm"+id)
+  $.ajax({
+    type: form.attr('method'),
+    url: form.attr('action'),
+    data: form.serialize(),
+    success: function (data) {
+      Swal.fire({
+        title: "Success",
+        text: data,
+        icon: "success"
+      });
+    },
+    error: function(data) {
+      Swal.fire({
+        title: "Success",
+        text: data,
+        icon: "success"
+      });
+    }
+  });
 }
