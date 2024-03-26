@@ -3,9 +3,9 @@
 <div class="container">
   <div class="row">
     <div class="col-9 mx-auto mt-4">
-      <h1>Add Blog</h1>
+      <h1>Update Blog</h1>
       <hr>
-      <form method="post">
+      <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
@@ -18,7 +18,11 @@
             CKEDITOR.replace('content');
           </script>
         </div>
-        <button type="submit" class="btn btn-success">Add Blog</button>
+        <div class="mb-3">
+          <label for="blog_image" class="form-label">Image - <a href="/media/{{blog.image}}">{{blog.image}}</a></label>
+          <input type="file" class="form-control" id="blog_image" name="blog_image">
+        </div>
+        <button type="submit" class="btn btn-success">Update Blog</button>
       </form>
     </div>
 

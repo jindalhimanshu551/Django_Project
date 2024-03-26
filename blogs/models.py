@@ -10,6 +10,7 @@ class Blog(BaseTime):
     title = models.CharField(max_length=200)
     content = RichTextField()
     is_published = models.BooleanField(default=True)
+    image = models.ImageField(upload_to="blog_images", null=True)
 
     class Meta:
         ordering = ("title",)

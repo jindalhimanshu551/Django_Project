@@ -16,6 +16,7 @@
             {% for query in queryset %}
             <div class="col-4 mb-4">
               <div class="card">
+                <img src="/media/{{query.blog.image}}" class="card-img-top" alt="blog_image">
                 <div class="card-body">
                   <div class="d-flex justify-content-between">
                     <h5 class="card-title">{{query.blog.title|truncatechars:25}}</h5>

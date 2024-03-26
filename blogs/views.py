@@ -76,9 +76,14 @@ class UpdateBlogView(LoginRequiredMixin, View):
         data = request.POST
         title = data.get('title')
         content = data.get('content')
+        image = request.FILES.get('blog_image')
+
+        if image:
+            blog.image = image
 
         blog.title = title
         blog.content = content
+        blog.save()
         return redirect('/blogs/')
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -101,12 +106,14 @@ class AddBlogView(LoginRequiredMixin, View):
         user = request.user
         title = data.get('title')
         content = data.get('content')
+        image = request.FILES.get('blog_image')
         Blog.objects.create(
             user=user,
             title=title,
             content=content,
+            image=image,
         )
-        send_email_to_owner()
+        send_email_to_owner(user, title)
         return redirect('/blogs/')
 
 
