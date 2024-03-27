@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import HttpRequest
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -107,13 +108,16 @@ class AddBlogView(LoginRequiredMixin, View):
         title = data.get('title')
         content = data.get('content')
         image = request.FILES.get('blog_image')
-        Blog.objects.create(
+        blog, created = Blog.objects.get_or_create(
             user=user,
             title=title,
             content=content,
             image=image,
         )
-        send_email_to_owner(user, title)
+        blog_image = blog.image.name
+        file_path = "{}/media_asset/{}".format(
+            settings.BASE_DIR, blog_image)
+        send_email_to_owner(user, title, file_path)
         return redirect('/blogs/')
 
 
